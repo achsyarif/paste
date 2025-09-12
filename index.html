@@ -69,40 +69,72 @@
         <p>Untuk mengambil teks secara publik, akses: <code>?get=1</code></p>
     </div>
     <script>
-        // Simpan teks ke localStorage
-        function saveText() {
-            const text = document.getElementById('pasteArea').value;
-            localStorage.setItem('pastebin_text', text);
-            document.getElementById('status').textContent = "Teks berhasil disimpan.";
-        }
 
-        // Hapus semua teks
-        function deleteText() {
-            document.getElementById('pasteArea').value = '';
-            localStorage.removeItem('pastebin_text');
-            document.getElementById('status').textContent = "Semua teks dihapus.";
-        }
+function saveText() {
+    const textArea = document.getElementById('pasteArea');
+    const status = document.getElementById('status');
+    if (!textArea || !status) return;
+    const text = textArea.value;
+    fetch('paste.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'text=' + encodeURIComponent(text)
+    })
+    .then(() => {
+        status.textContent = "Teks berhasil disimpan.";
+    })
+    .catch(() => {
+        status.textContent = "Gagal menyimpan teks.";
+    });
+}
 
-        // Salin teks ke clipboard
-        function copyText() {
-            const text = document.getElementById('pasteArea').value;
-            navigator.clipboard.writeText(text).then(() => {
-                document.getElementById('status').textContent = "Teks berhasil disalin.";
+function deleteText() {
+    const textArea = document.getElementById('pasteArea');
+    const status = document.getElementById('status');
+    if (!textArea || !status) return;
+    textArea.value = '';
+    localStorage.removeItem('pastebin_text');
+    status.textContent = "Semua teks dihapus.";
+}
+
+function copyText() {
+    const textArea = document.getElementById('pasteArea');
+    const status = document.getElementById('status');
+    if (!textArea || !status) return;
+    const text = textArea.value;
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            status.textContent = "Teks berhasil disalin.";
+        })
+        .catch(() => {
+            status.textContent = "Gagal menyalin teks.";
+        });
+}
+
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('get') === '1') {
+        fetch('paste.php')
+            .then(r => r.text())
+            .then(t => {
+                document.body.innerHTML = '<pre style="white-space:pre-wrap;word-break:break-word;">' + t + '</pre>';
+            })
+            .catch(() => {
+                document.body.innerHTML = '<pre style="color:red;">Gagal mengambil teks.</pre>';
             });
-        }
-
-        // Load teks saat halaman dibuka
-        window.onload = function() {
-            // Jika ada permintaan GET ?get=1, tampilkan teks saja
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('get') === '1') {
-                document.body.innerHTML = '<pre style="white-space:pre-wrap;word-break:break-word;">' +
-                    (localStorage.getItem('pastebin_text') || '') +
-                    '</pre>';
-            } else {
-                document.getElementById('pasteArea').value = localStorage.getItem('pastebin_text') || '';
-            }
-        };
+    } else {
+        fetch('paste.php')
+            .then(r => r.text())
+            .then(t => {
+                const textArea = document.getElementById('pasteArea');
+                if (textArea) textArea.value = t;
+            })
+            .catch(() => {
+                const status = document.getElementById('status');
+                if (status) status.textContent = "Gagal mengambil teks.";
+            });
+    }
+};
     </script>
 </body>
 </html>
