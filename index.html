@@ -88,15 +88,26 @@ function saveText() {
     });
 }
 
+// ...existing code...
 function deleteText() {
     const textArea = document.getElementById('pasteArea');
     const status = document.getElementById('status');
     if (!textArea || !status) return;
     textArea.value = '';
-    localStorage.removeItem('pastebin_text');
-    status.textContent = "Semua teks dihapus.";
+    // Hapus di server
+    fetch('paste.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'text=' // kirim kosong
+    })
+    .then(() => {
+        status.textContent = "Semua teks dihapus.";
+    })
+    .catch(() => {
+        status.textContent = "Gagal menghapus teks.";
+    });
 }
-
+// ...existing code...
 function copyText() {
     const textArea = document.getElementById('pasteArea');
     const status = document.getElementById('status');
