@@ -1,4 +1,22 @@
-Ginnn Gin:
-8373999480:AAEWaX4kB0ybxjvMnRAo8EeXspVZdqFK79s
+package com.example.mywebapp
 
-7584822148
+import android.os.Bundle
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var myWebView: WebView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        myWebView = WebView(this)
+        myWebView.settings.javaScriptEnabled = true // Aktifkan JS kalau perlu
+        myWebView.webViewClient = WebViewClient() // Buka link di WebView, bukan browser
+
+        myWebView.loadUrl("https://namasituskamu.com") // Ganti dengan URL kamu
+        setContentView(myWebView)
+    }
+}
