@@ -1,22 +1,2 @@
-package com.example.mywebapp
 
-import android.os.Bundle
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var myWebView: WebView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        myWebView = WebView(this)
-        myWebView.settings.javaScriptEnabled = true // Aktifkan JS kalau perlu
-        myWebView.webViewClient = WebViewClient() // Buka link di WebView, bukan browser
-
-        myWebView.loadUrl("https://namasituskamu.com") // Ganti dengan URL kamu
-        setContentView(myWebView)
-    }
-}
+const int relayPins[8] = {16, 5, 14, 12, 13, 4, 0, 2}; // D0, D1, D5, D6, D7, D2, D3, D4
